@@ -42,9 +42,10 @@ func processFile(ctx context.Context, redisClient *redis.Client, path string, tt
 	// prepare key
 	basename := filepath.Base(path)
 	keyName := strings.Replace(basename, "sess_", "", -1)
+	key := "PHPREDIS_SESSION:" + keyName
 
 	// put session to redis
-	err = redisClient.Set(ctx, keyName, string(contents), ttl).Err()
+	err = redisClient.Set(ctx, key, string(contents), ttl).Err()
 	if err != nil {
 		return fmt.Errorf("could not put key %s to redis: %s", keyName, err)
 	}
