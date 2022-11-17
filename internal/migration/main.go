@@ -3,18 +3,16 @@ package migration
 import (
 	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"log"
 	"os"
 	"path/filepath"
 	"session-redis-migration/pkg/config"
+	"session-redis-migration/pkg/redis"
 	"strings"
 	"time"
 )
 
-func Run(ctx context.Context, cfg *config.Config) error {
-	redisClient := initializeRedisClient(cfg)
-
+func Run(ctx context.Context, redisClient redis.Client, cfg *config.Config) error {
 	// get files
 	files, err := filepath.Glob(cfg.FilePattern)
 	if err != nil {
@@ -33,7 +31,7 @@ func Run(ctx context.Context, cfg *config.Config) error {
 	return nil
 }
 
-func processFile(ctx context.Context, redisClient *redis.Client, path string, ttl time.Duration) error {
+func processFile(ctx context.Context, redisClient redis.Client, path string, ttl time.Duration) error {
 	contents, err := os.ReadFile(path)
 	if err != nil {
 		return fmt.Errorf("could not read file %s: %s", path, err)
@@ -51,12 +49,4 @@ func processFile(ctx context.Context, redisClient *redis.Client, path string, tt
 	}
 
 	return nil
-}
-
-func initializeRedisClient(cfg *config.Config) *redis.Client {
-	return redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", cfg.RedisHost, cfg.RedisPort),
-		Password: cfg.RedisPassword,
-		DB:       cfg.RedisDB,
-	})
 }

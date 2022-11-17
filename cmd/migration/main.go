@@ -6,6 +6,7 @@ import (
 	"os"
 	"session-redis-migration/internal/migration"
 	"session-redis-migration/pkg/config"
+	"session-redis-migration/pkg/redis"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 		log.Fatalf("could not load configuration: %s", err)
 	}
 
-	err = migration.Run(ctx, cfg)
+	err = migration.Run(ctx, redis.New(cfg), cfg)
 	if err != nil {
 		os.Exit(1)
 	}
