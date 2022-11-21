@@ -40,5 +40,4 @@ to the Redis database.
    go run cmd/migration/main.go -files '/tmp/bla/sess_*'
    ```
    
-   > please not the quotation marks in the `files` flag. This is how
-   > to prevent globbing.
+   > please note the apostrophes in the -files flag. This is to prevent globbing.
