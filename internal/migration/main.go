@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"session-redis-migration/pkg/config"
+	config "session-redis-migration/pkg/config/migration"
 	"session-redis-migration/pkg/redis"
 	"strings"
 	"time"

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"session-redis-migration/pkg/redis"
 	"time"
 )
 
@@ -13,7 +14,7 @@ type Config struct {
 	RedisDB       int
 	RedisPassword string
 	TargetTTL     time.Duration
-	FilePattern   string
+	KeyPattern    string
 }
 
 func New() (*Config, error) {
@@ -22,7 +23,7 @@ func New() (*Config, error) {
 	redisDBFlag := flag.Int("db", 0, "Redis DB index")
 	redisPasswordFlag := flag.String("password", "", "Redis password")
 	targetTTLFlag := flag.String("ttl", "336h", "TTL for Redis keys")
-	filePatternFlag := flag.String("files", "", "Session files to tranfer to Redis")
+	keyPatternFlag := flag.String("keys", "", "KEYS patter")
 
 	flag.Parse()
 
@@ -33,8 +34,8 @@ func New() (*Config, error) {
 	}
 
 	// perform basic sanity checks
-	if *filePatternFlag == "" {
-		log.Fatalf("-files flag must not be empty")
+	if *keyPatternFlag == "" {
+		log.Fatalf("-keys flag must not be empty")
 	}
 
 	return &Config{
@@ -43,6 +44,15 @@ func New() (*Config, error) {
 		RedisDB:       *redisDBFlag,
 		RedisPassword: *redisPasswordFlag,
 		TargetTTL:     targetTTL,
-		FilePattern:   *filePatternFlag,
+		KeyPattern:    *keyPatternFlag,
 	}, nil
+}
+
+func (c *Config) GetRedisConfig() redis.Config {
+	return redis.Config{
+		RedisHost:     c.RedisHost,
+		RedisPort:     c.RedisPort,
+		RedisDB:       c.RedisDB,
+		RedisPassword: c.RedisPassword,
+	}
 }
