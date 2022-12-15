@@ -1,7 +1,8 @@
 # PHP session migration helper
 
-This helper can help you with the migration of PHP session files
-to the Redis database. 
+Migration helper can help you with the migration of PHP session files
+to the Redis database. TTL helper configures TTL of already existing
+keys.
 
 ## Usage
 
@@ -11,27 +12,17 @@ to the Redis database.
     ```bash
     go build cmd/migration/main.go
     ```
+    
+    or
+    
+    ```bash
+    go build cmd/ttl/main.go
+    ```
 
 3. get the help
 
    ```bash
    ./main -h
-   ```
-
-   ```
-   Usage of main:
-     -db int
-       Redis DB index
-     -files string
-       Session files to tranfer to Redis
-     -host string
-       Redis host (default "localhost")
-     -password string
-       Redis password
-     -port int
-       Redis port (default 6379)
-     -ttl string
-       TTL for Redis keys (default "336h")
    ```
    
 4. migrate the sessions
@@ -40,4 +31,10 @@ to the Redis database.
    go run cmd/migration/main.go -files '/tmp/bla/sess_*'
    ```
    
-   > please note the apostrophes in the -files flag. This is to prevent globbing.
+   or set the TTL
+
+   ```bash
+   go run cmd/migration/main.go -ttl 336h -keys 'PHP*'
+   ```
+   
+   > please note the apostrophes in the -files or -keys flags. This is to prevent globbing.
